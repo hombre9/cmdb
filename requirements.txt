@@ -14,7 +14,7 @@ redis
 django-bootstrap3
 mongoengine
 django-uuidfield
-uuid
+uuid==1.30
 ipy
 apscheduler==2.1.2
 python-nmap

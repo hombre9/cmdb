@@ -13,8 +13,9 @@
 
 import urllib2, cookielib, urllib, yaml, json
 import requests
+import ssl
 
-#requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()
 
 
 class salt_api_token(object):
@@ -31,14 +32,17 @@ class salt_api_token(object):
             'CustomUser-agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
             "Accept": "application/x-yaml",
         }
-        s = {'expr_form': 'list', "client": "local_async"}
+        #s = {'expr_form': 'list', "client": "local_async"}
         self.headers.update(token)
-        self.data.update(s)
+        self.data.update(data)
 
     def run(self):
         req = requests.post(self.url, headers=self.headers, data=self.data, verify=False)
         context = req.text
-        return yaml.load(context)
+        #s = yaml.load(context)
+        #print context23
+        return  yaml.load(context)
+
 
     def CmdRun(self):
         self.data["client"] = "local"

@@ -27,7 +27,7 @@ urlpatterns = patterns('',
 
                        # 服务器授权
                        url(r'host/user_list/$', "cmdb_auth.views.user_select"),
-                       url(r'host/business/$', "cmdb_auth.views.ztree_business"),
+                       url(r'host/business/$', "cmdb_auth.views.ztree_business",name="add_business"),
                        url(r'host/add_host/(?P<uuid>[^/]+)/$', "cmdb_auth.views.user_auth_server", name="add_auth"),
                        url(r'node/(?P<uuid>[^/]+)/$', "cmdb_auth.views.user_count", name="node_count"),
 

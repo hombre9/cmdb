@@ -35,7 +35,7 @@ class business_form(forms.ModelForm):
     try:
         dev_group = department_Mode.objects.get(desc_gid=1003)
         FAVORITE_COLORS_CHOICES = CustomUser.objects.values_list("id", "first_name").filter(department_id=dev_group.id)
-        # FAVORITE_COLORS_CHOICES = CustomUser.objects.values_list("id", "first_name")
+        #FAVORITE_COLORS_CHOICES = CustomUser.objects.values_list("id", "first_name")
         project_user_group = forms.MultipleChoiceField(required=False, widget=forms.SelectMultiple,
                                                        choices=FAVORITE_COLORS_CHOICES, label=u"用户列表")
     # project_user_group = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=FAVORITE_COLORS_CHOICES, label=u"用户列表")
@@ -369,11 +369,14 @@ def server_type_add(request):
         uf = business_form()
         try:
             dev_group = department_Mode.objects.get(desc_gid=1003)
+            #user_list = CustomUser.objects.filter(department_id=10)
             user_list = CustomUser.objects.filter(department_id=dev_group.id)
         except:
             pass
         user_group = []
-        # user_list = CustomUser.objects.filter(is_superuser__isnull=True)
+        user_list = CustomUser.objects.filter(is_superuser__isnull=False)
+        dev_group = department_Mode.objects.filter(desc_gid=1003)
+        #user_list = CustomUser.objects.filter(department_id=dev_group.id)
 
     return render_to_response('assets/server_type_add.html', locals(), context_instance=RequestContext(request))
 
@@ -401,7 +404,10 @@ def auth_server_type_edit(request, uuid):
         pass
 
     if business_name.project_user_group:
-        user_list_id = [int(i) for i in ast.literal_eval(business_name.project_user_group)]
+        #user_list_id = [int(i) for i in ast.literal_eval(business_name.project_user_group)]
+        dev_group_1 = department_Mode.objects.filter(desc_gid=1003)
+        #dev_group_2 = department_Mode.objects.get(business_name.project_user_group)
+        dev_group_3 = department_Mode.objects.filter(desc_gid=1003)
 
     if request.method == 'POST':
         print "*" * 100
@@ -432,9 +438,9 @@ def auth_server_type_del(request, uuid):
         # idc_log(request.user.username, business_item.service_name, "业务删除", request.user.username, time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())), id, request.user.id)
         business_item.delete()  # 这个删除会删除该业务下的机器
         project_name = business_item.service_name
-        ret = zabbix_group_del(project_name)
-        if ret == 0:
-            pass
+        #ret = zabbix_group_del(project_name)
+        #if ret == 0:
+        #    pass
     return HttpResponseRedirect("/assets/server/type/list/")
 
 

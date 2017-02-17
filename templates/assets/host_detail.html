@@ -31,17 +31,35 @@
                             <div class="text-left">
                                 <table class="table">
                                     <tr>
-                                        <td class="text-navy">IP</td>
+                                        <td class="text-navy">内网地址</td>
                                         <td>{{ host.eth1 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">外网地址</td>
+                                        <td>{{ host.eth2 }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">主机名</td>
                                         <td>{{ host.node_name }}</td>
                                     </tr>
                                     <tr>
+                                        <td class="text-navy">业务用户</td>
+                                        <td>{{ host.systemuser }}</td>
+                                    </tr>
+
+                                    <tr>
                                         <td class="text-navy">MAC</td>
                                         <td>{{ host.mac }}</td>
                                     </tr>
+                                    <tr>
+                                        <td class="text-navy">负载均衡VIP</td>
+                                        <td>{{ host.f5ip }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">文件服务器IP</td>
+                                        <td>{{ host.fileip }}</td>
+                                    </tr>
+
                                     <tr>
                                         <td class="text-navy">远控卡IP</td>
                                         <td>{{ host.internal_ip}}</td>
@@ -59,7 +77,12 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="text-navy">服务</td>
+                                    <tr>
+                                        <td class="text-navy">运行服务程序</td>
+                                        <td>{{ host.ext_char1 }}</td>
+                                    </tr>
+
+                                        <td class="text-navy">运行服务端口</td>
                                         <td>
                                              <table class="table">
                                                  {% for s in host.service.all %}
@@ -71,20 +94,46 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td class="text-navy">数据库IP</td>
+                                        <td>{{ host.dbip }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">数据库实例名</td>
+                                        <td>{{ host.dbsid }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">数据库用户</td>
+                                        <td>{{ host.dbuser }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">编程语言</td>
+                                        <td>{{ host.framework }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">WEB服务URL</td>
+                                        <td>{{ host.weburl }}</td>
+                                    </tr>
+                                    <tr>
                                         <td class="text-navy">环境</td>
                                         <td>{{ host.env}}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">主机类型</td>
-                                        {% if host.vm %}
+                                        {% if host.type = 0 %}
                                             <td>虚拟机</td>
-                                        {% else %}
+                                        {% elif host.type = 1 %}
                                             <td>物理机</td>
+                                        {% else %}
+                                            <td>容器</td>
                                         {% endif %}
                                     </tr>
                                     <tr>
                                         <td class="text-navy">IDC</td>
                                         <td>{{ host.idc.name }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">网络区域</td>
+                                        <td>{{ host.room_number }} </td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">机柜信息</td>

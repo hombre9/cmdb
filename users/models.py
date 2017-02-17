@@ -134,9 +134,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    #def __unicode__(self):
+    #    return self.username
+
+
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
+
 
     def get_full_name(self):
         """
@@ -169,6 +174,8 @@ class server_auth(models.Model):
     class Meta:
         verbose_name = u"日志记录"
         verbose_name_plural = verbose_name
+
+
 
 
 if __name__ == '__main__':

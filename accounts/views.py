@@ -146,6 +146,26 @@ def user_delete(request, id):
     return render_to_response('user/user_list.html', locals(), context_instance=RequestContext(request))
 
 
+
+@login_required
+def user_delete_ok(request, id):
+    u"""
+    查看用户
+    """
+    status = check_auth(request, "delete_user")
+    if not status:
+        return render_to_response('default/error_auth.html', locals(), context_instance=RequestContext(request))
+
+    user = CustomUser.objects.get(pk=id)
+    #user.is_staff = False
+    #user.is_active = False
+    user.delete()
+   # user.save()
+
+    return render_to_response('user/user_list.html', locals(), context_instance=RequestContext(request))
+
+
+
 @login_required
 def department_view(request):
     u"""

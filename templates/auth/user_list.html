@@ -54,7 +54,7 @@
                                 </td>
                                 <td>{{ i.id| add:30000 }}</td>
                                 <td>
-                                    <a href="{% url "node_count" i.uuid %}"> {{ i.username|node_count }}台</a>
+                                    <a> {{ i.username|node_count }}台</a>
                                 </td>
                                 <td>
                                     <a href="/auth/host/add_host/{{ i.uuid }}/" class="btn btn-xs btn-success">添加权限</a>

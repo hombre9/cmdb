@@ -26,6 +26,8 @@ from salt_ui.views.api_log_class import salt_log
 from django.contrib.auth.decorators import login_required
 from users.models import CustomUser
 import requests
+import salt.config
+import salt.wheel
 from accounts.models import UserCreateForm
 
 
@@ -198,7 +200,7 @@ def salt_garins(request):
             'tgt':salt_node_name,
             'arg':salt_cmd_lr ,
                            },
-            "https://192.168.49.14/",
+            salt_api_url,
             {"X-Auth-Token": token_api_id}
             )
             list_all = list_all.run()
@@ -330,17 +332,20 @@ def salt_key_list(request):
     """
 
     token_api_id = token_id()
-    list_all = salt_api_token(
-        {
-            'client': 'wheel',
-            'fun': 'key.list_all',
-        },
-        salt_api_url,
-        {"X-Auth-Token": token_api_id}
-    )
+#    list_all = salt_api_token(
+#        {
+#            'client': 'wheel',
+#            'fun': 'key.list_all',
+#        },
+#        salt_api_url,
+#        {"X-Auth-Token": token_api_id}
+#    )
+    list_all = salt_api_token({'client': 'wheel','fun': 'key.list_all'}, salt_api_url, {"X-Auth-Token": token_api_id})
+    s = salt_api_url
     list_all = list_all.run()
     data = list_all['return'][0]
     if data['data']['success']:
+    #if True:
         return_data = data['data']['return']
         minions = return_data['minions']
         minions_pre = return_data['minions_pre']
@@ -355,6 +360,7 @@ def salt_key_accept(request):
     list = salt_api_token({'client': 'wheel', 'fun': 'key.accept', 'match': node_name}, salt_api_url, {"X-Auth-Token": token_api_id})
     list.run()
     return HttpResponse("Y")
+    return HttpResponseRedirect("/salt/key_list/")
     
 @login_required
 @csrf_protect
@@ -363,4 +369,7 @@ def salt_delete_key(request):
     token_api_id = token_id()
     list = salt_api_token({'client': 'wheel', 'fun': 'key.delete', 'match': node_name}, salt_api_url, {"X-Auth-Token": token_api_id})
     list.run()
-    return HttpResponseRedirect("/salt/1/")
+    return HttpResponseRedirect("/salt/key_list/")
+    #return HttpResponseRedirect("/salt/key_list")
+    #return render_to_response('saltstack/key_list.html', locals(), context_instance=RequestContext(request))
+

@@ -36,13 +36,13 @@
         <!-- 业务 -->
         <div class="hr-line-dashed"></div>
         <div class="form-group">
-            <label for="groups" class="col-lg-2 control-label">研发用户列表</label>
+            <label for="groups" class="col-lg-2 control-label">研发用户组</label>
             <div class="col-sm-4">
                 <select id="groups" size="12" class="form-control m-b" multiple>
-                {% for i in dev_group_userlist %}
-                    {% if i.id not in user_list_id %}
-                        <option value="{{ i.id }}">{{ i }}</option>
-                    {% endif %}
+                {% for i in dev_group_1 %}
+                    {#{% if i.id not in user_list_id %}#}
+                        <option value="{{ i.id }}">{{ i.department_name }}</option>
+                   {# {% endif %}#}
                 {% endfor %}
                 </select>
             </div>
@@ -55,9 +55,9 @@
             <div class="col-sm-4">
                 <div>
                     <select id="groups_selected" name="project_user_group" class="form-control m-b" size="12"  multiple >
-                        {% for i in dev_group_userlist %}
+                        {% for i in user_list_id %}
                             {% if i.id in user_list_id %}
-                                <option value="{{ i.id }}" selected >{{ i }}</option>
+                                <option value="{{ i.id }}" selected >{{ i.department_name }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>

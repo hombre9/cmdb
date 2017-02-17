@@ -208,15 +208,15 @@ LOGGING = {
     }
 }
 
-EMAIL_HOST = 'mail.qq.com'
+EMAIL_HOST = '111.198.162.30'
 EMAIL_PORT = '25'
-EMAIL_HOST_USER = 'devops'
-EMAIL_HOST_PASSWORD = '123456'
+EMAIL_HOST_USER = 'yut15'
+EMAIL_HOST_PASSWORD = 'Tianxiezuo@12'
 EMAIL_USE_TLS = False
 EMAIL_PUSH = True
 
 # 发送邮件帐号
-SendMail = "ops@xxx.com"
+SendMail = "yut15@chinaunicom.cn"
 
 
 REDIS_HOST = "127.0.0.1"
@@ -229,7 +229,7 @@ salt_config = "%s/mysite/%s" % (django_path, "prod.py")
 
 # from mongoengine import *
 # connect('config_center')
-ops_mail = "songxs@fun.tv"
+ops_mail = "super@unicom.cn"
 
 if os.path.isfile(localhost_path):
     from localhost import *
@@ -244,12 +244,15 @@ else:
 # BOOTSTRAP_COLUMN_COUNT = 10
 
 # salt api info
-salt_cdn_url = 'https://192.168.111.142/'
-salt_center_url = 'https://192.168.111.101/'
-salt_user = 'salt'
-salt_passwd = '992a15aecbcf5727df775c45a35738cf'
+salt_cdn_url = 'http://192.168.180.222:8000/'
+salt_center_url = 'http://192.168.180.222:8000/'
+salt_api_url = 'https://192.168.180.222:8000/'
+salt_api_user = 'salt-user'
+salt_api_pass = 'salt-user_pass'
+salt_user = 'salt-user'
+salt_passwd = 'salt-user_pass'
 
-# zabbix api info
+# zabbix api infite
 zabbix_on = False
 zabbix_url = 'http://192.168.111.47:8080/zabbix'
 zabbix_user = 'admin'

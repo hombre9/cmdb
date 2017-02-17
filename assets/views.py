@@ -196,25 +196,13 @@ def host_edit(request):
     services = [s for s in service_all if s not in service_host]
     username = request.user.username
     if request.method == 'POST':
-        physics = request.POST.get('physics', '')
+        #zw.type = request.POST.get('type', '')
         uf_post = HostForm(request.POST, instance=host)
         if uf_post.is_valid():
             zw = uf_post.save(commit=False)
             zw.mac = str(request.POST.getlist("mac")[0]).replace(':', '-').strip(" ")
             request.POST = request.POST.copy()
-            if physics:
-                physics_host = get_object_or_404(Host, eth1=physics)
-                request.POST['vm'] = physics_host.uuid
-                if host.vm:
-                    if str(host.vm.eth1) != str(physics):
-                        zw.vm = physics_host
-                else:
-                    zw.vm = physics_host
-                zw.type = 1
-            else:
-                request.POST['vm'] = ''
-                zw.type = 0
-
+            zw.type = request.POST.get('type', '')
             zw.save()
             uf_post.save_m2m()
             new_host = get_object_or_404(Host, uuid=uuid)
@@ -347,8 +335,17 @@ def host_del(request):
     uuid = request.GET.get('uuid', '')
     host = get_object_or_404(Host, uuid=uuid)
     host.status = 3
-    host.eth1 = ''
+    host.eth1 = '0.0.0.0'
     host.eth2 = ''
+    host.f5ip = ''
+    host.weburl = ''
+    host.ext_char1 = ''
+    host.framework = ''
+    host.dbsid = ''
+    host.dbip = ''
+    host.systemuser = ''
+    host.dbuser = ''
+    host.fileip = ''
     host.node_name = host.uuid
     host.internal_ip = ''
     host.system = ''
@@ -360,6 +357,7 @@ def host_del(request):
     host.number = ''
     host.switch_port = ''
     host.idc = IDC.objects.get(name=u"报废库房")
+    #host.idc = IDC.objects.get(name=idc)
     host.business.clear()
     host.service.clear()
     host.save()
@@ -367,14 +365,24 @@ def host_del(request):
 
 
 @login_required
+@csrf_exempt
 def host_del_batch(request):
     """ 批量删除主机 """
     ids = str(request.POST.get('ids'))
     for uuid in ids.split(','):
         host = get_object_or_404(Host, uuid=uuid)
         host.status = 3
-        host.eth1 = ''
+        host.eth1 = '0.0.0.0'
         host.eth2 = ''
+        host.f5ip = ''
+        host.weburl = ''
+        host.framework = ''
+        host.ext_char1 = ''
+        host.dbsid = ''
+        host.dbip = ''
+        host.systemuser = ''
+        host.dbuser = ''
+        host.fileip = ''
         host.node_name = host.uuid
         host.internal_ip = ''
         host.system = ''
@@ -385,7 +393,7 @@ def host_del_batch(request):
         host.env = ''
         host.number = ''
         host.switch_port = ''
-        host.idc = IDC.objects.get(name=u'报废库房')
+        host.idc = IDC.objects.get(name=u"报废库房")
         host.business.clear()
         host.service.clear()
         host.save()
@@ -403,23 +411,26 @@ def host_list(request):
     brands = Server_System
     server_status = SERVER_STATUS
     server_list_count = hosts.count()
-    physics = Host.objects.filter(vm__isnull=True).count()
-    vms = Host.objects.filter(vm__isnull=False).count()
+    physics = Host.objects.filter(type=1).count()
+    vms = Host.objects.filter(type=0).count()
+    container = Host.objects.filter(type=2).count()
     contact_list, p, contacts, page_range, current_page, show_first, show_end = pages(hosts, request)
 
     return render_to_response('assets/host_list.html', locals(), context_instance=RequestContext(request))
 
 
+
 @login_required
 @csrf_protect
-def host_add_batch_bak(request):
+def host_add_batch(request):
     """ 批量添加主机 """
     if request.method == 'POST':
-        multi_hosts = request.POST.get('batch').split('\n')
+        multi_hosts = request.POST.get('batch').split('\n\r')
         for host in multi_hosts:
             if host == '':
                 break
-            ip, hostname, idc, service, brand, comment, pip = host.split()
+            pip = host.split()
+            (ip, hostname, idc, service, brand, comment) = pip
             idc = get_object_or_404(IDC, name=idc)
             services = []
             for s in ast.literal_eval(service):
@@ -430,8 +441,8 @@ def host_add_batch_bak(request):
                 return my_render('assets/host_add_batch.html', locals(), request)
 
             if pip != '[]':
-                pip = Host.objects.get(eth1=ast.literal_eval(pip)[0])
-                asset = Host(node_name=hostname, eth1=ip, idc=idc, brand=brand, editor=comment, vm=pip)
+                #pip = Host.objects.get(eth1=ast.literal_eval(pip)[0])
+                asset = Host(node_name=hostname, eth1=ip, idc=idc, brand=brand, editor=comment)
             else:
                 asset = Host(node_name=hostname, eth1=ip, idc=idc, brand=brand, editor=comment)
             asset.save()
@@ -445,7 +456,7 @@ def host_add_batch_bak(request):
 
 @login_required
 @csrf_protect
-def host_add_batch(request):
+def host_add_batch_bak(request):
     """ 批量添加主机 """
     if request.method == 'POST':
         multi_hosts = request.POST.get('batch').split('\n')
@@ -464,7 +475,6 @@ def host_add_batch(request):
         return my_render('assets/host_add_batch.html', locals(), request)
 
     return my_render('assets/host_add_batch.html', locals(), request)
-
 
 @login_required
 def idc_add(request):
@@ -492,7 +502,6 @@ def idc_add(request):
     else:
         uf = IdcForm()
     return render_to_response('assets/idc_add.html', locals(), context_instance=RequestContext(request))
-
 
 @login_required
 def idc_list(request):

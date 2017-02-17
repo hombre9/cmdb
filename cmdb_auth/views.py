@@ -237,6 +237,7 @@ def ztree_business(request):
                                                                                                   time.localtime(
                                                                                                       time.time()))).hexdigest())
     userId = str(user)
+    #userId = unicode(user)
     user_data = CustomUser.objects.get(uuid=userId)
 
     if get_token != sum_token:

@@ -47,6 +47,33 @@
                     <div class="hr-line-dashed"></div>
                     {{ uf.internal_ip|bootstrap_horizontal }}
 
+
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.f5ip|bootstrap_horizontal }}
+
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.weburl|bootstrap_horizontal }}
+
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.framework|bootstrap_horizontal }}
+
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.dbuser|bootstrap_horizontal }}
+
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.dbsid|bootstrap_horizontal }}
+
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.dbip|bootstrap_horizontal }}
+
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.systemuser|bootstrap_horizontal }}
+
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.fileip|bootstrap_horizontal }}
+
+
+
                     <div class="hr-line-dashed"></div>
                     {{ uf.number|bootstrap_horizontal }}
 
@@ -66,12 +93,13 @@
                     {{ uf.env|bootstrap_horizontal }}
 
                     <div class="hr-line-dashed"></div>
+                    {{ uf.room_number|bootstrap_horizontal }}
+
+                    <div class="hr-line-dashed"></div>
                     {{ uf.idc|bootstrap_horizontal }}
 
                     <div class="hr-line-dashed"></div>
-                    <div class="form-group"><label class="col-sm-2 control-label">虚拟机父主机</label>
-                        <div class="col-sm-8"><input type="text" placeholder="如果主机为虚拟机, 请填写父主机IP, 真实机则不填写." name="physics" class="form-control" value="{{ host.vm.eth1 }}"></div>
-                    </div>
+                    {{ uf.type|bootstrap_horizontal }}
 
                     <div class="hr-line-dashed"></div>
                     {{ uf.brand|bootstrap_horizontal }}
@@ -110,10 +138,12 @@
                         </div>
 
                     </div>
+                    <div class="hr-line-dashed"></div>
+                    {{ uf.ext_char1|bootstrap_horizontal }}
 
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label for="services" class="col-lg-2 control-label">运行服务</label>
+                        <label for="services" class="col-lg-2 control-label">运行服务端口</label>
 
                         <div class="col-sm-3">
                             <select id="services" size="12" class="form-control m-b" multiple>
@@ -140,8 +170,6 @@
 
                     </div>
 
-                    <div class="hr-line-dashed"></div>
-                    {{ uf.room_number|bootstrap_horizontal }}
 
                     <div class="hr-line-dashed"></div>
                     {{ uf.cabinet|bootstrap_horizontal }}

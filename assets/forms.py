@@ -8,9 +8,9 @@ from assets.models import Host, IDC, Service, Project
 class HostForm(forms.ModelForm):
     class Meta:
         model = Host
-        fields = ["node_name", "idc", "room_number", "eth1", "eth2", "mac", "internal_ip", "room_number", "cabinet",
-                  "server_cabinet_id", "number", "business", "service", "env", "status",
-                  "cpu", "hard_disk", "memory", "system", "system_cpuarch", "vm", "Services_Code",
+        fields = ["node_name", "idc", "room_number", "eth1", "eth2", "mac", "internal_ip","f5ip","weburl", "framework","dbuser","dbsid","dbip","systemuser","fileip","room_number", "cabinet",
+                  "server_cabinet_id", "number", "business", "service", "env", "status","ext_char1",
+                  "cpu", "hard_disk", "memory", "system", "system_cpuarch", "type", "Services_Code",
                   "brand", "guarantee_date", "server_sn", "idle", "editor"]
 
 

@@ -11,7 +11,7 @@
         <div class="ibox float-e-margins">
             <div id="edit_result">
                 <div class="ibox-title">
-                    <h5> 主机详细信息列表 <span style="color:red">总共有:{{server_list_count}}台  真实机:{{ physics }}  虚拟机: {{ vms }}台</span></h5>
+                    <h5> 主机详细信息列表 <span style="color:red">总共有:{{server_list_count}}台  真实机:{{ physics }}  虚拟机: {{ vms }}台 容器: {{ container }}台</span></h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -84,6 +84,7 @@
                                     <option value="">所有类型</option>
                                     <option value="1">物理机</option>
                                     <option value="0">虚拟机</option>
+                                    <option value="2">容器</option>
                                 </select>
                             </label>
                         </div>
@@ -259,7 +260,7 @@
             var url= $(this).attr("value") + '?uuid=' + ids;
                 index = $.layer({
                     type: 2,
-                    title: '风行网自动化运维平台-批量修改主机',
+                    title: '自动化运维平台-批量修改主机',
                     maxmin: true,
                     shift: 'top',
                     border: [2, 0.3, '#1AB394'],

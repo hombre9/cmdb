@@ -28,7 +28,7 @@ from reportlab.lib.units import inch
 def myLaterPages(canvas, doc):
     canvas.saveState()
     canvas.setFont('msyh', 9)
-    canvas.drawString(inch, 0.75 * inch, "北京风行在线技术有限公司")
+    canvas.drawString(inch, 0.75 * inch, "联通支付有限公司")
     canvas.restoreState()
 
 
@@ -38,7 +38,7 @@ def rpt(data):
     normalStyle = stylesheet['Normal']
     curr_date = time.strftime("%Y-%m-%d", time.localtime())
     # 标题：段落的用法详见reportlab-userguide.pdf中chapter 6 Paragraph
-    rpt_title = '<para autoLeading="off" fontSize=15 align=center><b><font face="msyh">风行资产管理系统导出信息%s</font></b><br/><br/><br/></para>' % curr_date
+    rpt_title = '<para autoLeading="off" fontSize=15 align=center><b><font face="msyh">资产管理系统导出信息%s</font></b><br/><br/><br/></para>' % curr_date
     story.append(Paragraph(rpt_title, normalStyle))
     # component_data= [['模块', '', '', '', "", ''],]
     component_data = [['ip', '机房', '资产编号', '品牌', 'CPU|内存|硬盘', '机柜']]

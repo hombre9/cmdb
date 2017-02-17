@@ -19,7 +19,7 @@ BOOL_CHOICES = ((True, '使用中'), (False, '空闲'))
 
 idc_type = (
     (0, u"CDN"),
-    (1, u"核心")
+    (1, u"核心"),
 )
 
 idc_operator = (
@@ -48,6 +48,13 @@ VM_STATUS = (
     (0, u"real machine"),
     (1, u"vitual machine"),
 )
+
+host_type= (
+    (0, u"虚拟机"),
+    (1, u"物理机"),
+    (2, u"容器"),
+)
+
 
 Server_System = [
     (i, i) for i in
@@ -79,15 +86,59 @@ Server_System = [
     ]
 
 # System_os = [(i, i) for i in (u"CentOS", u"Centos 6.2")]
-System_os = [(i, i) for i in (u"CentOS", u"Windows")]
+
+System_os = [
+     (i, i) for i in 
+     (
+         u"CentOS7.3", 
+         u"Redhat5.6",
+         u"Redhat6.0",
+         u"Redhat6.4",
+         u"Redhat6.5",
+         u"Redhat6.6",
+         u"Redhat6.8",
+         u"Kali linux2016",
+         u"Windows 2008",
+         u"Windows 2008 Standard"
+     )]
+
 Cores = [(i * 1, u"%s Cores" % (i * 1)) for i in range(1, 33)]
 # system_arch = [(i, i) for i in (u"x86_64", u"x86_64")]
-system_arch = [(u"x86_64", u"x86_64")]
+system_arch = [(i,i) for i in (u"x86_32", u"x86_64",u"Power")]
 System_usage = [(i, i) for i in (u"default", u"database")]
 ENVIRONMENT = [(i, i) for i in (u"st", u"aws", u"prod", u"pub")]
 
-# room_hours = [(i, i) for i in (u"3-2")]
-room_hours = [(u"3-2", u"3-2")]
+room_hours = [
+      (i, i) for i in    
+      (
+       u"核心区",
+       u"接入区",
+       u"WEB区",
+       u"测试区",
+       u"汇聚区",
+       u"网管区",
+       u"二龙路机房",
+       u"密钥系统容灾区",
+      )]
+#room_hours = [(u"3-2", u"3-2")]
+
+
+service_name = [
+      (i, i) for i in
+      (
+       u"Jboss5",
+       u"Jboss7",
+       u"Tongweb5",
+       u"Tongweb6",
+       u"Tomcat6",
+       u"Tomcat7",
+       u"Weblogic",
+       u"Jetty",
+       u"Apache",
+       u"Nginx",
+
+      )]
+
 
 STATE_CHOICE = (
     (0, u"可申请"),
@@ -112,6 +163,7 @@ class Line(models.Model):
         verbose_name = u"产品线"
         verbose_name_plural = verbose_name
 
+#user_list = CustomUser.objects.filter(is_superuser__isnull=False)
 
 class Project(models.Model):
     uuid = UUIDField(auto=True, primary_key=True)
@@ -190,7 +242,9 @@ class Service(models.Model):
     """
     uuid = UUIDField(auto=True, primary_key=True)
     name = models.CharField(max_length=30, unique=True, verbose_name=u"服务名称",
-                            help_text=u'注意，所有服务操作全部期于linux服务操作，如: "service iptables restart"')
+                            help_text=u'服务名称规范：内网端口_xxx，外网端口_xxx，负载均衡端口_xxx')
+    #name = models.CharField(max_length=30, choices=service_name, unique=True, verbose_name=u'服务名称')
+    #service_area = models.CharField(max_length=30, choices=service_area, unique=True, verbose_name=u'服务区域')
     port = models.IntegerField(null=True, blank=True, verbose_name=u"端口")
     remark = models.TextField(null=True, blank=True, verbose_name=u"备注")
 
@@ -206,8 +260,16 @@ class Host(models.Model):
     uuid = UUIDField(auto=True, primary_key=True)
     node_name = models.CharField(max_length=100, blank=True, null=True, verbose_name=u"主机名")
     idc = models.ForeignKey(IDC, blank=True, null=True, verbose_name=u'机房', on_delete=models.SET_NULL)
-    eth1 = models.IPAddressField(blank=True, null=True, verbose_name=u'网卡1')
-    eth2 = models.IPAddressField(blank=True, null=True, verbose_name=u'网卡2')
+    eth1 = models.IPAddressField(blank=True, null=True, verbose_name=u'内网地址')
+    eth2 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'外网地址')
+    f5ip = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'负载均衡VIP')
+    weburl =  models.TextField(blank=True, null=True, verbose_name=u'WEB服务URL')
+    framework = models.CharField(max_length=64, blank=True, null=True, verbose_name=u'编程语言')
+    dbsid = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'数据库实例名')
+    dbip = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'数据库IP')
+    systemuser = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'业务用户')
+    dbuser = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'数据库用户')
+    fileip = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'文件服务IP')
     mac = models.CharField(max_length=20, blank=True, null=True, verbose_name=u"MAC")
     internal_ip = models.IPAddressField(blank=True, null=True, verbose_name=u'远控卡')
     brand = models.CharField(max_length=64, choices=Server_System, blank=True, null=True, verbose_name=u'硬件厂商')
@@ -233,14 +295,76 @@ class Host(models.Model):
     """
     status = models.IntegerField(verbose_name=u"机器状态", choices=SERVER_STATUS, default=0, blank=True)
     vm = models.ForeignKey("self", blank=True, null=True, verbose_name=u"虚拟机父主机")
-    type = models.IntegerField(verbose_name=u'主机类型', default=1, blank=True, max_length=2)
+    type = models.IntegerField(verbose_name=u'主机类型',  choices=host_type, default=1, blank=True, max_length=2)
     Services_Code = models.CharField(max_length=16, blank=True, null=True, verbose_name=u"快速服务编码")
     env = models.CharField(max_length=32, blank=True, null=True, verbose_name=u"环境", choices=ENVIRONMENT)
-    room_number = models.CharField(verbose_name=u"房间号", max_length=32, choices=room_hours, blank=True, null=True)
+    room_number = models.CharField(verbose_name=u"网络区域", max_length=32, choices=room_hours, blank=True, null=True)
     server_sn = models.CharField(verbose_name=u"SN编号", max_length=32, blank=True, null=True)
     switch_port = models.CharField(verbose_name=u"端口号", max_length=12, blank=True, null=True)
-    service = models.ManyToManyField(Service, verbose_name=u'运行服务', blank=True, null=True)
+    service = models.ManyToManyField(Service, verbose_name=u'运行服务端口', blank=True, null=True)
     idle = models.BooleanField(verbose_name=u'状态', default=1, choices=BOOL_CHOICES)
+    ext_char1 = models.CharField(max_length=64, choices=service_name, blank=True, null=True, verbose_name=u'运行服务程序')
+    ext_char2 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用2')
+    ext_char3 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用3')
+    ext_char4 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用4')
+    ext_char5 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用5')
+    ext_char6 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用6')
+    ext_char7 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用7')
+    ext_char8 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用8')
+    ext_char9 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用9')
+    ext_char10 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用10')
+    ext_char11 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用11')
+    ext_char12 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用12')
+    ext_char13 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用13')
+    ext_char14 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用14')
+    ext_char15 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用15')
+    ext_char16 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用16')
+    ext_char17 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用17')
+    ext_char18 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用18')
+    ext_char19 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用19')
+    ext_char20 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用20')
+    ext_char21 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用21')
+    ext_char22 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用22')
+    ext_char23 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用23')
+    ext_char24 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用24')
+    ext_char25 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用25')
+    ext_char26 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用26')
+    ext_char27 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用27')
+    ext_char28 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用28')
+    ext_char29 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用29')
+    ext_char30 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用30')
+    ext_char31 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用31')
+    ext_char32 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用32')
+    ext_char33 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用33')
+    ext_char34 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用34')
+    ext_char35 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用35')
+    ext_char36 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用36')
+    ext_char37 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用37')
+    ext_char38 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用38')
+    ext_char39 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用39')
+    ext_char40 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用40')
+    ext_char41 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用41')
+    ext_char42 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用42')
+    ext_char43 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用43')
+    ext_char44 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用44')
+    ext_char45 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用45')
+    ext_char46 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用46')
+    ext_char47 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用47')
+    ext_char48 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用48')
+    ext_char49 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用49')
+    ext_char50 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用50')
+    ext_char51 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用51')
+    ext_char52 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用52')
+    ext_char53 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用53')
+    ext_char54 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用54')
+    ext_char55 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用55')
+    ext_char56 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用56')
+    ext_char57 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用57')
+    ext_char58 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用58')
+    ext_char59 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用59')
+    ext_char60 = models.CharField(max_length=128, blank=True, null=True, verbose_name=u'备用60')    
+
+
 
     def __unicode__(self):
         return self.node_name

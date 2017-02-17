@@ -37,21 +37,22 @@
     <div id="content-block" class="col-sm-11 col-md-10">
         {{ uf.service_name|bootstrap_horizontal }}
         {{ uf.aliases_name|bootstrap_horizontal }}
-        {{ uf.project_contact|bootstrap_horizontal }}
+        {{ uf.project_contact|bootstrap_horizontal }} 
         {{ uf.project_contact_backup|bootstrap_horizontal }}
+
         {{ uf.line|bootstrap_horizontal }}
 
 {#        {{ uf.project_user_group|bootstrap_horizontal }}#}
         <!-- 业务 -->
         <div class="hr-line-dashed"></div>
         <div class="form-group">
-            <label for="groups" class="col-lg-2 control-label">研发用户列表</label>
+            <label for="groups" class="col-lg-2 control-label">研发用户组</label>
             <div class="col-sm-4">
                 <select id="groups" size="12" class="form-control m-b" multiple>
-                {% for i in user_list %}
-                    {% if i not in user_group %}
-                        <option value="{{ i.id }}">{{ i }}</option>
-                    {% endif %}
+                {% for i in dev_group %}
+                    {# {% if i not in user_group %} #}
+                        <option value="{{ i.id }}">{{ i.department_name }}</option>
+                    {# {% endif %}#}
                 {% endfor %}
                 </select>
             </div>
