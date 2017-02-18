@@ -208,15 +208,15 @@ LOGGING = {
     }
 }
 
-EMAIL_HOST = '111.198.162.30'
+EMAIL_HOST = ''
 EMAIL_PORT = '25'
-EMAIL_HOST_USER = 'yut15'
-EMAIL_HOST_PASSWORD = 'Tianxiezuo@12'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 EMAIL_PUSH = True
 
 # 发送邮件帐号
-SendMail = "yut15@chinaunicom.cn"
+SendMail = ""
 
 
 REDIS_HOST = "127.0.0.1"
