@@ -24,3 +24,5 @@ pika
 django-summernote
 DjangoUeditor
 xlrd
+MySQL-Python
+salt
